@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+    bd-mysql:
+        build:
+            context: ./node-db
+            dockerfile: Dockerfile
+        ports:
+            - "3306:3306"
+        environment:             
+            - MYSQL_ROOT_USER=root
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=sequelize_class_1
+        #volumes:
+            #- my-datavolume:/var/lib/mysql
+          
+        #volumes: 
+        #    - /Users/gonzalogarcia/Development/GEEKSHUBS/DOCKER/curso/node/node-db:/var/lib/mysql/data
+
+        healthcheck:
+            test: "/usr/bin/mysql --user=root --password=root --execute \"SHOW DATABASES;\""
+            interval: 2s
+            timeout: 20s
+            retries: 10
+
+    app:
+        build:
+            context: ./node-app
+            dockerfile: Dockerfile
+        depends_on:
+            bd-mysql:
+                condition: service_healthy
+        volumes: # relative path : container path (!must be equal than workdir of this service image Dockerfile!)
+            - ./node-app:/node-app
+        ports:
+            - "3000:3000"
+        stdin_open: true
