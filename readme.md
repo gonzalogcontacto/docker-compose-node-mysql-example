@@ -83,7 +83,7 @@ volumes:
 
 ## Access bash/shell of a container
 
-```docker exec -ti [containerName] bash/sh```
+```docker exec -it [containerName] bash/sh```
 
   
 
